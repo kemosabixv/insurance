@@ -28,7 +28,7 @@ export default function DashboardPage() {
             key={product.id}
             name={product.name}
             type={product.type || "General"}
-            coverage={product.description || "No description"}
+            coverage={product.coverage || "No description"}
             price={product.price}
           />
         ))}
