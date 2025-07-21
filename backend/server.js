@@ -4,7 +4,7 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const jwt = require('jsonwebtoken');
 const { tokenHandler } = require('./oauth');
-const { client, seedProducts } = require('./redis/products');
+const { db, seedProducts } = require('./db');
 
 const app = express();
 app.use(cors());
@@ -28,15 +28,15 @@ function authenticate(req, res, next) {
   });
 }
 
-// Protected products endpoint
-app.get('/api/products', authenticate, async (req, res) => {
-  const keys = await client.keys('*');
-  const values = await Promise.all(keys.map(key => client.get(key)));
-  const products = values.map(val => JSON.parse(val));
+// Protected products endpoint using SQLite
+app.get('/api/products', authenticate, (req, res) => {
+  const stmt = db.prepare('SELECT * FROM products');
+  const products = stmt.all();
   res.json(products);
 });
 
 // Start server
-seedProducts().then(() => {
-  app.listen(PORT, () => console.log(`Backend running at http://localhost:${PORT}`));
-});
+seedProducts();
+app.listen(PORT, () => console.log(`✅ Backend running at http://localhost:${PORT}`));
+
+
