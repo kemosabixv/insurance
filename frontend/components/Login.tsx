@@ -22,7 +22,10 @@ export default function Login({
       <h1 className="text-2xl font-bold mb-4 text-black">Login</h1>
       <form className="space-y-4" onSubmit={handleLogin}>
         <div>
-          <label className="block text-sm font-medium mb-1 text" htmlFor="username">
+          <label
+            className="block text-sm font-medium mb-1 text"
+            htmlFor="username"
+          >
             Username
           </label>
           <input
@@ -31,11 +34,14 @@ export default function Login({
             required
             type="text"
             value={username}
-            onChange={e => setUsername(e.target.value)}
+            onChange={(e) => setUsername(e.target.value)}
           />
         </div>
         <div>
-          <label className="block text-sm font-medium mb-1 text" htmlFor="password">
+          <label
+            className="block text-sm font-medium mb-1 text"
+            htmlFor="password"
+          >
             Password
           </label>
           <input
@@ -44,17 +50,17 @@ export default function Login({
             required
             type="password"
             value={password}
-            onChange={e => setPassword(e.target.value)}
+            onChange={(e) => setPassword(e.target.value)}
           />
         </div>
         <button
-  id="login-btn"
-  className="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700 transition"
-  type="submit"
-  disabled={isLoading}
->
-  Login
-</button>
+          id="login-btn"
+          className="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700 transition"
+          type="submit"
+          disabled={isLoading}
+        >
+          Login
+        </button>
         {error && (
           <div className="mt-2 text-red-600 text-sm" data-testid="login-error">
             {error}

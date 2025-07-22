@@ -7,7 +7,12 @@ interface ProductCardProps {
   price: number;
 }
 
-export default function ProductCard({ name, type, coverage, price }: ProductCardProps) {
+export default function ProductCard({
+  name,
+  type,
+  coverage,
+  price,
+}: ProductCardProps) {
   return (
     <div className="border p-4 rounded shadow">
       <h2 className="font-semibold text-lg text-black">{name}</h2>
@@ -17,4 +22,3 @@ export default function ProductCard({ name, type, coverage, price }: ProductCard
     </div>
   );
 }
-

@@ -1,16 +1,19 @@
-"use client"
+"use client";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { login } from "@/lib/api";
 import { saveToken } from "@/lib/auth";
 import Login from "@/components/Login";
 import { getToken } from "@/lib/auth";
+import { useAuth } from "@/lib/authcontext";
+
 export default function LoginPage() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+  const { setLoggedIn } = useAuth();
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
@@ -18,7 +21,10 @@ export default function LoginPage() {
     try {
       const token = await login(username, password);
       saveToken(token);
+      setError("");
+      setLoggedIn(true);
       router.push("/dashboard");
+      //eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       if (err.message === "Invalid credentials") {
         setError("invalid credentials");
@@ -30,7 +36,7 @@ export default function LoginPage() {
     } finally {
       setIsLoading(false);
     }
-}
+  }
 
   useEffect(() => {
     if (getToken()) {
@@ -39,15 +45,14 @@ export default function LoginPage() {
   }, [router]);
 
   return (
-        <Login
-          username={username}
-          setUsername={setUsername}
-          password={password}
-          setPassword={setPassword}
-          error={error}
-          handleLogin={handleLogin}
-          isLoading={isLoading}
-        />
-
+    <Login
+      username={username}
+      setUsername={setUsername}
+      password={password}
+      setPassword={setPassword}
+      error={error}
+      handleLogin={handleLogin}
+      isLoading={isLoading}
+    />
   );
 }

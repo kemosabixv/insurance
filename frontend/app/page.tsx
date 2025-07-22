@@ -1,11 +1,10 @@
-"use client"
-import Image from "next/image";
+"use client";
 import Link from "next/link";
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 import { getToken } from "@/lib/auth";
-import ShieldIcon from '@mui/icons-material/Security';
-import SupportAgentIcon from '@mui/icons-material/SupportAgent';
-import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
+import ShieldIcon from "@mui/icons-material/Security";
+import SupportAgentIcon from "@mui/icons-material/SupportAgent";
+import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 
 export default function Home() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -18,18 +17,19 @@ export default function Home() {
     {
       icon: <ShieldIcon fontSize="large" className="text-blue-600" />,
       title: "Comprehensive Coverage",
-      description: "Protection against all major risks with customizable options"
+      description:
+        "Protection against all major risks with customizable options",
     },
     {
       icon: <SupportAgentIcon fontSize="large" className="text-blue-600" />,
       title: "24/7 Support",
-      description: "Our team is always available to assist you"
+      description: "Our team is always available to assist you",
     },
     {
       icon: <AttachMoneyIcon fontSize="large" className="text-blue-600" />,
       title: "Affordable Premiums",
-      description: "Competitive rates with flexible payment options"
-    }
+      description: "Competitive rates with flexible payment options",
+    },
   ];
 
   return (
@@ -40,7 +40,8 @@ export default function Home() {
             Protect What Matters Most
           </h2>
           <p className="text-lg text-gray-600 mb-12">
-            Comprehensive insurance solutions tailored to your needs. Get covered in minutes.
+            Comprehensive insurance solutions tailored to your needs. Get
+            covered in minutes.
           </p>
 
           <div className="flex flex-col sm:flex-row justify-center gap-4">
@@ -59,7 +60,6 @@ export default function Home() {
                 >
                   Get Started
                 </Link>
-                
               </>
             )}
           </div>
@@ -69,7 +69,7 @@ export default function Home() {
           {features.map((feature, index) => (
             <div key={index} className="flex flex-col items-center">
               {feature.icon}
-              <h3 className="mt-4 font-semibold">{feature.title}</h3>
+              <h3 className="mt-4 font-semibold text-black">{feature.title}</h3>
               <p className="text-gray-600">{feature.description}</p>
             </div>
           ))}
@@ -78,7 +78,10 @@ export default function Home() {
 
       <footer className="bg-gray-50 py-12 mt-16">
         <div className="container mx-auto px-6 text-center text-gray-500">
-          <p>© {new Date().getFullYear()} SecureShield Insurance. All rights reserved.</p>
+          <p>
+            © {new Date().getFullYear()} SecureShield Insurance. All rights
+            reserved.
+          </p>
         </div>
       </footer>
     </div>

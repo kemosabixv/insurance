@@ -11,6 +11,7 @@ export async function login(username: string, password: string) {
       password,
     });
     return res.data.access_token;
+  //eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (err: any) {
     if (err.response?.status === 401) {
       throw new Error("Invalid credentials");
@@ -29,6 +30,4 @@ export async function fetchProducts(token: string) {
     },
   });
   return res.data;
-  }
-
-
+}
