@@ -99,6 +99,69 @@ npm run test
 
 ---
 
+## 🔑 OAuth Configuration
+
+This project uses **OAuth 2.0 Resource Owner Password Credentials Grant** for authentication.
+
+### Backend OAuth Setup
+
+- **Endpoint:**  
+  `POST /oauth/token`
+
+- **Request Body Example:**
+  ```json
+  {
+    "grant_type": "password",
+    "client_id": "test_client",
+    "client_secret": "test_secret",
+    "username": "user1",
+    "password": "pass1"
+  }
+  ```
+
+- **Environment Variables (`backend/.env`):**
+  ```env
+  JWT_SECRET=your_jwt_secret_key
+  PORT=4000
+  ```
+
+- **Default Credentials (for testing):**
+  - `client_id`: `test_client`
+  - `client_secret`: `test_secret`
+  - `username`: `user1`
+  - `password`: `pass1`
+
+- **Token Response Example:**
+  ```json
+  {
+    "access_token": "<JWT>",
+    "token_type": "Bearer",
+    "expires_in": 3600
+  }
+  ```
+
+- **Error Responses:**
+  - Invalid credentials:  
+    `401 Unauthorized`  
+    ```json
+    { "error": "invalid_credentials" }
+    ```
+  - Invalid client or malformed request:  
+    `400 Bad Request`  
+    ```json
+    { "error": "invalid_client" }
+    ```
+
+### Frontend Usage
+
+- The frontend uses these credentials to request a token and stores it in `localStorage` as `access_token`.
+- All protected API requests include the token in the `Authorization` header:
+  ```
+  Authorization: Bearer <access_token>
+  ```
+
+---
+
 ## 🧪 Unit Test Coverage
 
 - **Backend:**  
