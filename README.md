@@ -15,10 +15,15 @@ insurance/
 ├── backend/              # Express + SQLite + OAuth
 │   ├── db.js             # In-memory SQLite DB setup
 │   ├── oauth.js          # OAuth token handler
-│   └── server.js         # Express API server
+│   ├── server.js         # Express API server
+│   └── __tests__/        # Backend unit tests
 └── frontend/             # Next.js client (app router)
     ├── app/              # Dashboard, login pages
-    └── lib/              # API + token management
+    ├── components/       # React components
+    ├── lib/              # API + token management
+    ├── __tests__/        # Frontend unit tests
+    ├── globals.css       # Global styles
+    └── jest.config.ts    # Jest config for frontend
 ```
 
 ---
@@ -53,7 +58,7 @@ npm run start:dev
 ### 2. Frontend Setup
 
 ```bash
-cd ./
+cd frontend
 npm install
 ```
 
@@ -67,85 +72,45 @@ npm run dev
 
 ---
 
-## 🔐 OAuth 2.0 Configuration
+## 🧪 Running Tests
 
-Using **Resource Owner Password Credentials** grant type.
+### Frontend Unit Tests
 
-### ✅ Client Credentials
-```json
-{
-  "client_id": "test_client",
-  "client_secret": "test_secret"
-}
+```bash
+npm run test:frontend
 ```
+- Runs Jest tests in `frontend/components/__tests__/` and other test folders.
+- **Covers:** UI rendering, error states, button logic, and component props.
 
-### ✅ User Credentials
-```json
-{
-  "username": "user1",
-  "password": "pass1"
-}
+### Backend Unit Tests
+
+```bash
+npm run test:backend
 ```
+- Runs Jest tests in `backend/__tests__/`.
+- **Covers:** OAuth token issuance, authentication, authorization, and API endpoint logic.
 
-### 🧪 Sample Token Request
+### Run All Tests
 
-```http
-POST /oauth/token HTTP/1.1
-Host: localhost:4000
-Content-Type: application/json
-
-{
-  "grant_type": "password",
-  "client_id": "test_client",
-  "client_secret": "test_secret",
-  "username": "user1",
-  "password": "pass1"
-}
+```bash
+npm run test
 ```
-
-**✅ Sample Response:**
-
-```json
-{
-  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6...",
-  "token_type": "Bearer",
-  "expires_in": 3600
-}
-```
+- Runs both frontend and backend test suites.
 
 ---
 
-## 📡 API Endpoints
+## 🧪 Unit Test Coverage
 
-### 🔒 `POST /oauth/token`
-> Issues a JWT access token using username/password + client credentials.
+- **Backend:**  
+  - Validates OAuth token issuance and rejection for invalid credentials.
+  - Checks protected API endpoints for correct authentication and authorization.
+  - Handles edge cases (expired tokens, malformed requests).
 
----
-
-### 🔐 `GET /api/products`
-> Returns a list of available insurance products. Requires a Bearer token.
-
-**Request:**
-
-```http
-GET /api/products HTTP/1.1
-Authorization: Bearer <access_token>
-```
-
-**Response:**
-
-```json
-[
-  {
-    "id": 1,
-    "name": "Health Insurance",
-    "type": "Health",
-    "coverage": "Medical coverage up to $50,000",
-    "price": 199.99
-  },
-  ...
-]
-```
+- **Frontend:**  
+  - Ensures login form renders and handles user input.
+  - Verifies error messages for invalid credentials and network failures.
+  - Tests button disabled/enabled states during async actions.
+  - Covers UI logic for logged-in vs. logged-out states.
 
 ---
 
@@ -158,6 +123,4 @@ Authorization: Bearer <access_token>
 
 ## 🧹 Cleanup
 
-Press `CTRL+C` in terminal to stop the backend server. In-memory database and seeded data will be destroyed automatically.
-
----
+Press `CTRL+C` in terminal to stop the backend server. In-memory database and seeded data will

@@ -18,18 +18,17 @@ app.post('/oauth/token', tokenHandler);
 // Auth middleware
 function authenticate(req, res, next) {
   const authHeader = req.headers.authorization;
-  if (!authHeader) return res.sendStatus(401);
-
+  if (!authHeader) return res.sendStatus(403);
   const token = authHeader.split(' ')[1];
   jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
-    if (err) return res.sendStatus(403);
+    if (err) return res.status(403).json({ message: 'Invalid token' });
     req.user = user;
     next();
   });
 }
 
 // Protected products endpoint using SQLite
-app.get('/api/products', authenticate, (req, res) => {
+app.get('/api/products', authenticate, (res) => {
   const stmt = db.prepare('SELECT * FROM products');
   const products = stmt.all();
   res.json(products);

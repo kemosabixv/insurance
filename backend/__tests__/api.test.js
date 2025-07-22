@@ -54,4 +54,60 @@ describe('OAuth and /api/products', () => {
     expect(res.statusCode).toBe(200);
     expect(Array.isArray(res.body)).toBe(true);
   });
+
+  // Edge case: Invalid user credentials
+  test('should not issue token with invalid user credentials', async () => {
+    const res = await request(app).post('/oauth/token').send({
+      grant_type: 'password',
+      client_id: CLIENT.id,
+      client_secret: CLIENT.secret,
+      username: 'wronguser',
+      password: 'wrongpass',
+    });
+
+    expect(res.statusCode).toBe(401);
+    expect(res.body.access_token).toBeUndefined();
+  });
+
+  // Edge case: Invalid client credentials
+  test('should not issue token with invalid client credentials', async () => {
+    const res = await request(app).post('/oauth/token').send({
+      grant_type: 'password',
+      client_id: 'bad_client',
+      client_secret: 'bad_secret',
+      username: USER.username,
+      password: USER.password,
+    });
+
+    expect(res.statusCode).toBe(400);
+    expect(res.body.access_token).toBeUndefined();
+  });
+
+  // Edge case: Missing token when accessing products
+  test('should return 401 if no token is provided', async () => {
+    const res = await request(app).get('/api/products');
+    expect(res.statusCode).toBe(401);
+  });
+
+  // Edge case: Invalid token when accessing products
+  test('should return 403 if token is invalid', async () => {
+    const res = await request(app)
+      .get('/api/products')
+      .set('Authorization', 'Bearer invalidtoken');
+    expect(res.statusCode).toBe(403);
+  });
+
+  // Edge case: Expired token when accessing products
+  test('should return 403 if token is expired', async () => {
+    // Create an expired token
+    const expiredToken = jwt.sign(
+      { username: USER.username },
+      process.env.JWT_SECRET,
+      { expiresIn: -10 } // expired 10 seconds ago
+    );
+    const res = await request(app)
+      .get('/api/products')
+      .set('Authorization', `Bearer ${expiredToken}`);
+    expect(res.statusCode).toBe(403);
+  });
 });

@@ -9,15 +9,18 @@ function generateToken(username) {
 
 function tokenHandler(req, res) {
   const { grant_type, client_id, client_secret, username, password } = req.body;
+  console.log({reqBody: req.body});
 
   if (
     grant_type !== 'password' ||
     client_id !== CLIENT.id ||
-    client_secret !== CLIENT.secret ||
-    username !== USER.username ||
-    password !== USER.password
+    client_secret !== CLIENT.secret
   ) {
-    return res.status(400).json({ error: 'invalid_grant' });
+    return res.status(400).json({ error: 'malformed request' });
+  }
+
+  if (username !== USER.username || password !== USER.password) {
+  return res.status(401).json({ error: 'invalid_credentials' });
   }
 
   const access_token = generateToken(username);

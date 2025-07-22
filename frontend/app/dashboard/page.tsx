@@ -21,8 +21,8 @@ export default function DashboardPage() {
 
   return (
     <div className="p-4">
-      <h1 className="text-2xl font-bold mb-4">Insurance Products</h1>
-      <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
+      <h1 className="text-2xl font-bold mb-4 text-blue-950">Insurance Products</h1>
+      <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-3">
         {products.map((product: any) => (
           <ProductCard
             key={product.id}
