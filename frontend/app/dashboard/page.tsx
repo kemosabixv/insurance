@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { getToken } from "@/lib/auth";
+import { useAuth } from "@/lib/authcontext";
 import { fetchProducts } from "@/lib/api";
 import ProductCard from "@/components/ProductCard";
 
@@ -15,17 +15,20 @@ interface Product {
 }
 
 export default function DashboardPage() {
-  const [products, setProducts] = useState([]);
+  const { token, isLoggedIn } = useAuth();
+  const [products, setProducts] = useState<Product[]>([]);
   const router = useRouter();
 
   useEffect(() => {
-    const token = getToken();
-    if (!token) return router.push("/login");
+    if (!isLoggedIn) {
+      router.push("/login");
+      return;
+    }
 
-    fetchProducts(token)
+    fetchProducts()
       .then(setProducts)
       .catch(() => router.push("/login"));
-  }, [router]);
+  }, [isLoggedIn, router]);
 
   return (
     <div className="p-4">

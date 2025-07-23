@@ -1,5 +1,5 @@
 const express = require("express");
-const { OAuth2Server } = require("oauth2-server");
+const OAuth2Server = require("oauth2-server");
 const model = require("../oauth/model");
 
 const router = express.Router();
@@ -13,6 +13,7 @@ router.post("/token", async (req, res) => {
 
   try {
     const token = await oauth.token(request, response);
+    console.log("Generated token:", token);
     res.json(token);
   } catch (err) {
     res.status(err.code || 500).json(err);

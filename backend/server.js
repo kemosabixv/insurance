@@ -10,15 +10,17 @@ app.use(cors());
 app.use(bodyParser.json());
 
 const PORT = process.env.PORT || 4000;
-
-
+const JWT_SECRET = process.env.JWT_SECRET || "supersecretkey";
 
 // Auth middleware
 function authenticate(req, res, next) {
   const authHeader = req.headers.authorization;
   if (!authHeader) return res.sendStatus(401);
   const token = authHeader.split(" ")[1];
-  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+    console.log("Received token:", token);
+  jwt.verify(token, JWT_SECRET, (err, user) => {
+    console.log("JWT verification result:", err, user);
+    console.log("JWT secret used:", JWT_SECRET);
     if (err) return res.status(403).json({ message: "Invalid token" });
     req.user = user;
     next();

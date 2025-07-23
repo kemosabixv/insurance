@@ -2,10 +2,9 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { login } from "@/lib/api";
-import { saveToken } from "@/lib/auth";
 import Login from "@/components/Login";
-import { getToken } from "@/lib/auth";
 import { useAuth } from "@/lib/authcontext";
+import axios from "axios";
 
 export default function LoginPage() {
   const [username, setUsername] = useState("");
@@ -13,18 +12,16 @@ export default function LoginPage() {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
-  const { setLoggedIn } = useAuth();
-
+  const auth = useAuth();
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
     setIsLoading(true);
     try {
-      const token = await login(username, password);
-      saveToken(token);
+      await axios.post("/api/login", { username, password });
+      const { data } = await axios.get("/api/me");
+      auth.setAuth(data.token);
       setError("");
-      setLoggedIn(true);
       router.push("/dashboard");
-      //eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       if (err.message === "Invalid credentials") {
         setError("invalid credentials");
@@ -39,10 +36,10 @@ export default function LoginPage() {
   }
 
   useEffect(() => {
-    if (getToken()) {
+    if (auth && auth.token) {
       router.push("/dashboard");
     }
-  }, [router]);
+  }, [router, auth]);
 
   return (
     <Login
