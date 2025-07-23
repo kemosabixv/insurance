@@ -9,7 +9,7 @@
     "lint": "next lint",
     "test:frontend": "jest",
     "test:backend": "cd backend && jest",
-    "test": "npm run test:frontend && npm run test:backend"
+    "test": "npm run test:frontend && cd ../backend && npm run test:backend"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
