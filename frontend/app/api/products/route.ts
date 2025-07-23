@@ -1,16 +1,20 @@
 import { NextRequest, NextResponse } from "next/server";
-import * as cookie from "cookie";
+import {cookies} from "next/headers";
 import axios from "axios";
+
 
 const API_BASE = "http://localhost:4000";
 
 export async function GET(req: NextRequest) {
-  const cookieHeader = req.headers.get("cookie") || "";
-  const cookies = cookie.parse(cookieHeader);
-  const token = cookies.access_token;
+  const cookieStore = await cookies();
+  console.log("cookieStore:", cookieStore);
+  const token = cookieStore.get("access_token")?.value || null;
+  console.log("Token from cookies:", token);
 
   if (!token) {
+    console.error("No access token found in cookies")
     return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+  
   }
 
   try {

@@ -1,10 +1,9 @@
 // /pages/api/me.ts
 import { NextRequest, NextResponse } from "next/server";
-import * as cookie from "cookie";
+import { cookies } from "next/headers";
 
 export async function GET(req: NextRequest) {
-  const cookieHeader = req.headers.get("cookie") || "";
-  const cookies = cookie.parse(cookieHeader);
-  const token = cookies.access_token || null;
+  const cookieStore = await cookies();
+  const token = cookieStore.get("access_token")?.value || null;
   return NextResponse.json({ token });
 }

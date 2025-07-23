@@ -3,8 +3,8 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/authcontext";
-import { fetchProducts } from "@/lib/api";
 import ProductCard from "@/components/ProductCard";
+import axios from "axios";
 
 interface Product {
   id: number;
@@ -14,8 +14,10 @@ interface Product {
   price: number;
 }
 
+
+
 export default function DashboardPage() {
-  const { token, isLoggedIn } = useAuth();
+  const { isLoggedIn } = useAuth();
   const [products, setProducts] = useState<Product[]>([]);
   const router = useRouter();
 
@@ -24,10 +26,17 @@ export default function DashboardPage() {
       router.push("/login");
       return;
     }
-
-    fetchProducts()
-      .then(setProducts)
-      .catch(() => router.push("/login"));
+      async function loadProducts() {
+      try {
+        const res = await axios.get("/api/products");
+        console.log("Fetched products:", res.data);
+        setProducts(res.data);
+      } catch (error) {
+        setProducts([]);
+        console.error("Failed to fetch products:", error);
+      }
+    }
+    loadProducts();
   }, [isLoggedIn, router]);
 
   return (

@@ -1,10 +1,10 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { login } from "@/lib/api";
 import Login from "@/components/Login";
 import { useAuth } from "@/lib/authcontext";
 import axios from "axios";
+
 
 export default function LoginPage() {
   const [username, setUsername] = useState("");
@@ -12,14 +12,14 @@ export default function LoginPage() {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
-  const auth = useAuth();
+  const { isLoggedIn, setAuth } = useAuth();
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
     setIsLoading(true);
     try {
       await axios.post("/api/login", { username, password });
       const { data } = await axios.get("/api/me");
-      auth.setAuth(data.token);
+      setAuth(!!data.token);
       setError("");
       router.push("/dashboard");
     } catch (err: any) {
@@ -36,10 +36,10 @@ export default function LoginPage() {
   }
 
   useEffect(() => {
-    if (auth && auth.token) {
+    if (isLoggedIn) {
       router.push("/dashboard");
     }
-  }, [router, auth]);
+  }, [isLoggedIn, router]);
 
   return (
     <Login

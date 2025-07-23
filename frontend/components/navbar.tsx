@@ -1,17 +1,15 @@
 "use client";
-import { useEffect } from "react";
 import Link from "next/link";
 import ShieldIcon from "@mui/icons-material/Security";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/authcontext";
 
 const Navbar = () => {
-  const { token, setAuth } = useAuth();
-  const isLoggedIn = !!token;
+  const { isLoggedIn, setAuth } = useAuth();
   const router = useRouter();
 
   const logout = () => {
-    setAuth(null); // Clear token from context
+    setAuth(false); // Clear token from context
     router.push("/");
   };
 

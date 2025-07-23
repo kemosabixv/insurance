@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import * as cookie from "cookie";
+import { cookies } from "next/headers";
 import axios from "axios";
 
 const AUTH_BASE = "http://localhost:4001";
@@ -19,21 +19,23 @@ export async function POST(req: NextRequest) {
       params,
       { headers: { "Content-Type": "application/x-www-form-urlencoded" } }
     );
-    const token = response.data.access_token;
+    const token = response.data.accessToken;
+    console.log("Response from auth server:", response.data);
+    console.log("Login successful, token:", response.data.accessToken);
 
-    // Set HTTP-only cookie
-    const res = NextResponse.json({ success: true });
-    res.headers.set(
-      "Set-Cookie",
-      cookie.serialize("access_token", token, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        path: "/",
-        sameSite: "lax",
-        maxAge: 60 * 60, // 1 hour
-      })
-    );
-    return res;
+
+    // Set HTTP-only cookie using Next.js cookies API
+    const cookieStore = await cookies();
+    cookieStore.set("access_token", token, {
+      httpOnly: true,
+      path: "/",
+      sameSite: "lax",
+      maxAge: 60 * 60, // 1 hour
+    });
+    console.log("Access token set in cookies");
+    console.log("Cookie store after setting token:", cookieStore.get("access_token"));
+
+    return NextResponse.json({ success: true });
   } catch (error: any) {
     return NextResponse.json({ success: false, message: "Invalid credentials" }, { status: 401 });
   }
