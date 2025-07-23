@@ -1,26 +1,39 @@
-"use client"
-import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
-import { getToken } from "./auth";
+"use client";
+import React, { createContext, useContext, useState, ReactNode, useEffect } from "react";
+import axios from "axios";
 
 type AuthContextType = {
   isLoggedIn: boolean;
-  setLoggedIn: (value: boolean) => void;
+  setAuth: (isAuthenticated: boolean) => void;
 };
 
 const AuthContext = createContext<AuthContextType>({
   isLoggedIn: false,
-  setLoggedIn: () => {},
+  setAuth: () => {},
 });
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [isLoggedIn, setLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
 
   useEffect(() => {
-    setLoggedIn(!!getToken());
+    async function syncAuth() {
+      try {
+        const { data } = await axios.get("/api/me");
+        setIsLoggedIn(!!data.token); // Update based on server response
+        console.log("Auth context, isLoggedIn:", data.token ? true : false);
+      } catch (error) {
+        setIsLoggedIn(false);
+      }
+    }
+    syncAuth();
   }, []);
 
+  const setAuth = (isAuthenticated: boolean) => {
+    setIsLoggedIn(isAuthenticated);
+  };
+
   return (
-    <AuthContext.Provider value={{ isLoggedIn, setLoggedIn }}>
+    <AuthContext.Provider value={{ isLoggedIn, setAuth }}>
       {children}
     </AuthContext.Provider>
   );

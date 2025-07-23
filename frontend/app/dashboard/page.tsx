@@ -2,9 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { getToken } from "@/lib/auth";
-import { fetchProducts } from "@/lib/api";
+import { useAuth } from "@/lib/authcontext";
 import ProductCard from "@/components/ProductCard";
+import axios from "axios";
 
 interface Product {
   id: number;
@@ -14,18 +14,30 @@ interface Product {
   price: number;
 }
 
+
+
 export default function DashboardPage() {
-  const [products, setProducts] = useState([]);
+  const { isLoggedIn } = useAuth();
+  const [products, setProducts] = useState<Product[]>([]);
   const router = useRouter();
 
   useEffect(() => {
-    const token = getToken();
-    if (!token) return router.push("/login");
-
-    fetchProducts(token)
-      .then(setProducts)
-      .catch(() => router.push("/login"));
-  }, [router]);
+    if (!isLoggedIn) {
+      router.push("/login");
+      return;
+    }
+      async function loadProducts() {
+      try {
+        const res = await axios.get("/api/products");
+        console.log("Fetched products:", res.data);
+        setProducts(res.data);
+      } catch (error) {
+        setProducts([]);
+        console.error("Failed to fetch products:", error);
+      }
+    }
+    loadProducts();
+  }, [isLoggedIn, router]);
 
   return (
     <div className="p-4">

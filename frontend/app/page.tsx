@@ -1,17 +1,12 @@
 "use client";
 import Link from "next/link";
-import { useState, useEffect } from "react";
-import { getToken } from "@/lib/auth";
+import { useAuth } from "@/lib/authcontext";
 import ShieldIcon from "@mui/icons-material/Security";
 import SupportAgentIcon from "@mui/icons-material/SupportAgent";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 
 export default function Home() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-
-  useEffect(() => {
-    setIsLoggedIn(!!getToken());
-  }, []);
+const { isLoggedIn } = useAuth();
 
   const features = [
     {

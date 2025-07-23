@@ -1,24 +1,16 @@
 "use client";
-import { useEffect } from "react";
 import Link from "next/link";
-import { getToken } from "@/lib/auth";
 import ShieldIcon from "@mui/icons-material/Security";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/authcontext";
 
-
-
 const Navbar = () => {
-  const { isLoggedIn, setLoggedIn } = useAuth();
+  const { isLoggedIn, setAuth } = useAuth();
   const router = useRouter();
 
-  useEffect(() => {
-    setLoggedIn(!!getToken());
-  }, [setLoggedIn]);
-
   const logout = () => {
-    localStorage.removeItem("access_token");
-    setLoggedIn(false);
+    setAuth(false); // Clear token from context
+    router.push("/");
   };
 
   return (
@@ -37,10 +29,7 @@ const Navbar = () => {
         {isLoggedIn ? (
           <div className="flex gap-4 items-center">
             <button
-              onClick={() => {
-                logout();
-                router.push("/");
-                }}
+              onClick={logout}
               className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors"
             >
               Logout
