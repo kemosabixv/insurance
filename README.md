@@ -14,24 +14,36 @@ A full-stack insurance product management app built with:
 insurance/
 ├── backend/                # Express.js backend with SQLite and OAuth
 │   ├── db.js               # Sets up in-memory SQLite database
-│   ├── oauth/              # OAuth 2.0 logic and middleware
-│   │   ├── index.js        # Main OAuth logic
-│   │   └── utils.js        # OAuth helper functions
-│   ├── oauth.js            # Handles OAuth 2.0 token logic (legacy entry point)
+│   ├── package.json        # NPM configuration file
 │   ├── server.js           # Main Express API server
 │   └── __tests__/          # Backend Jest unit tests
 ├── frontend/               # Next.js frontend (App Router)
-│   ├── app/                # Application pages (dashboard, login, etc.)
-│   ├── components/         # Reusable React components
-│   ├── lib/                # API utilities and token management
+│   ├── app/                # Application pages, API route handlers (dashboard, login, etc.)
+│   │   ├── api/            # Next.js API route handlers (login, products, etc.)
+│   │   ├── dashboard/      # Dashboard page
+│   │   ├── login/          # Login page
+│   │   └── page.tsx        # Home page
+│   ├── components/         # Reusable React components (Login, Navbar, ProductCard, etc.)
+│   ├── lib/                # Auth context
 │   ├── __tests__/          # Frontend Jest unit tests
 │   ├── globals.css         # Global CSS styles
-│   └── jest.config.ts      # Jest configuration for frontend
-├── oauth2-server-app/      # Standalone OAuth 2.0 server (optional, for advanced scenarios)
-│   ├── src/                # Source code for OAuth2 server
-│   │   ├── config           # Main OAuth logic
-│   │   ├── oauth           # OAuth helper functions
-│   │   └── routes          # OAuth helper functions
+│   ├── jest.config.ts      # Jest configuration for frontend
+│   ├── jest.setup.ts       # Jest setup for frontend
+│   ├── next.config.ts      # Next.js configuration
+│   ├── tailwind.config.js  # Tailwind CSS configuration
+│   ├── postcss.config.js   # PostCSS configuration
+│   └── tsconfig.json       # TypeScript configuration
+│   oauth/
+│   ├── src/
+│   │   ├── app.js          # Entry point of the application
+│   │   ├── oauth/
+│   │   │   ├── model.js    # Implements the OAuth 2.0 model methods
+│   │   │   └── index.js    # Sets up the OAuth 2.0 server
+│   │   ├── routes/
+│   │   │   └── token.js     # Defines the token route for access tokens
+│   │   └── config/
+│   │       └── index.js     # Configuration settings
+│   └── package.json         # NPM configuration file
         
 ```
 
@@ -70,7 +82,7 @@ npm run start:dev
 
 ---
 
-### 2. Frontend Setup
+### 3. Frontend Setup
 
 ```bash
 cd frontend
@@ -87,7 +99,7 @@ npm run dev
 
 ---
 
-### 2. OAuth Setup
+### 4. OAuth Setup
 
 ```bash
 cd oauth
@@ -144,27 +156,30 @@ npm run test
 
 This project uses **OAuth 2.0 Resource Owner Password Credentials Grant** for authentication.
 
-### Backend OAuth Setup
+### OAuth Setup
 
-- **Endpoint:**  
-  `POST /oauth/token`
+- **Main entry:**  
+  `oauth/src/app.js`  
+  Sets up the Express server and integrates the OAuth 2.0 server.
 
-- **Request Body Example:**
-  ```json
-  {
-    "grant_type": "password",
-    "client_id": "test_client",
-    "client_secret": "test_secret",
-    "username": "user1",
-    "password": "pass1"
-  }
-  ```
+- **Token endpoint route:**  
+  `oauth/src/routes/token.js`  
+  Defines the `POST /oauth/token` endpoint for issuing access tokens.
 
-- **Environment Variables (`backend/.env`):**
-  ```env
-  JWT_SECRET=supersecretkey
-  PORT=4000
-  ```
+- **OAuth model implementation:**  
+  `oauth/src/oauth/model.js`  
+  Implements the required OAuth 2.0 model methods (getClient, getUser, saveToken, etc.) for token issuance and validation.
+
+**Request Body Example:**
+```json
+{
+  "grant_type": "password",
+  "client_id": "test_client",
+  "client_secret": "test_secret",
+  "username": "user1",
+  "password": "pass1"
+}
+```
 
 - **Default Credentials (for testing):**
   - `client_id`: `test_client`
@@ -193,7 +208,7 @@ This project uses **OAuth 2.0 Resource Owner Password Credentials Grant** for au
     { "error": "invalid_client" }
     ```
 
-### Frontend Usage (Updated)
+### Frontend Usage
 
 - The frontend authenticates by POSTing to `/api/login` (a Next.js route handler), which proxies to the backend OAuth server and sets the JWT as an **HTTP-only cookie** (`access_token`).
 - The frontend **does not store tokens in localStorage**.
