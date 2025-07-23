@@ -3,7 +3,6 @@ const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const jwt = require("jsonwebtoken");
-const { tokenHandler } = require("./oauth");
 const { db, seedProducts } = require("./db");
 
 const app = express();
@@ -12,8 +11,7 @@ app.use(bodyParser.json());
 
 const PORT = process.env.PORT || 4000;
 
-// OAuth token endpoint
-app.post("/oauth/token", tokenHandler);
+
 
 // Auth middleware
 function authenticate(req, res, next) {

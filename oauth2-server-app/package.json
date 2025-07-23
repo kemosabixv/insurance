@@ -1,0 +1,16 @@
+{
+  "name": "oauth2-server-app",
+  "version": "1.0.0",
+  "description": "A simple OAuth 2.0 authorization server using oauth2-server package.",
+  "main": "src/app.js",
+  "scripts": {
+    "start": "node src/app.js"
+  },
+  "dependencies": {
+    "express": "",
+    "oauth2-server": "",
+    "dotenv": ""
+  },
+  "author": "",
+  "license": "ISC"
+}

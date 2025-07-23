@@ -1,9 +1,10 @@
 import axios from "axios";
 const API_BASE = "http://localhost:4000";
+const AUTH_BASE = "http://localhost:4001"; // Authorization server base URL
 
 export async function login(username: string, password: string) {
   try {
-    const res = await axios.post(`${API_BASE}/oauth/token`, {
+    const res = await axios.post(`${AUTH_BASE}/oauth/token`, {
       grant_type: "password",
       client_id: "test_client",
       client_secret: "test_secret",
